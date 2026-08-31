@@ -1,0 +1,22 @@
+# macOS
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+
+# Dependency dirs (none today, but the site may grow a build step)
+node_modules/
+dist/
+.cache/
+
+# Environment / secrets — never commit form endpoints or API keys
+.env
+.env.*
