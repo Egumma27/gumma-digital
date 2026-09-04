@@ -14,6 +14,7 @@ gumma-digital/
 │   ├── work/page.tsx       Project types (replace with real case studies)
 │   ├── about/page.tsx      About + principles
 │   ├── contact/page.tsx    Contact form + details
+│   ├── thanks/page.tsx     Landing for a no-JS form POST
 │   ├── not-found.tsx       404
 │   ├── sitemap.ts          → /sitemap.xml
 │   └── robots.ts           → /robots.txt
@@ -24,6 +25,7 @@ gumma-digital/
 │   ├── ScrollReveal.tsx    IntersectionObserver reveal
 │   ├── Year.tsx            Footer copyright year
 │   └── icons.tsx           Every inline SVG, including the brand mark
+├── worker/index.ts         POST /api/contact -> emails you via Resend
 ├── lib/site.ts             Domain, email, form endpoint, nav
 └── public/assets/favicon.svg
 ```
@@ -46,7 +48,7 @@ These are the placeholders I could not fill in for you.
 |---|------|-------|
 | 1 | ~~Email address~~ — set to `support@gummadigital.com` | `lib/site.ts` (`email`) — drives the footer, CTAs, contact page, and JSON-LD |
 | 2 | **`https://gummadigital.com`** → your real domain | `lib/site.ts` (`url`) — drives canonical URLs, Open Graph, `sitemap.xml`, `robots.txt` |
-| 3 | **Contact form endpoint** | `lib/site.ts` (`formEndpoint`) — see below |
+| 3 | **`RESEND_API_KEY`** + a verified sending domain | Worker secret — see below |
 | 4 | **Pricing** — `$2,500` / `$9,000` / `$750` are placeholders | `app/services/page.tsx` (`plans`) |
 | 5 | **Your background** — the paragraphs marked `PERSONALISE` | `app/about/page.tsx` |
 | 6 | **Tech stack tags** — trim to what you want to be hired for | `app/about/page.tsx` (`stack`) |
@@ -55,27 +57,41 @@ These are the placeholders I could not fill in for you.
 Items 1–3 all live in one file, so a single edit to `lib/site.ts` covers the
 whole site.
 
-### Wiring up the contact form
+### How the contact form works
 
-The form works *today* without any setup: submitting opens the visitor's mail
-client with all the answers pre-filled. That's a fine launch state, but it loses
-people on phones with no mail app configured.
+Submissions go to `POST /api/contact`, handled by `worker/index.ts`, which emails
+you via [Resend](https://resend.com). Nothing third-party stores your enquiries,
+and the visitor never opens their own mail client.
 
-To collect submissions properly, create a free form at
-[Formspree](https://formspree.io) (or Basin, or Web3Forms) and paste the endpoint
-into `lib/site.ts`:
+Two things to set up once:
 
-```ts
-formEndpoint: "https://formspree.io/f/abcdwxyz",   // ← your endpoint
+**1. Verify the sending domain in Resend.** Add the DKIM and SPF records Resend
+gives you to the `gummadigital.com` zone. These are `TXT` records — they do not
+touch `MX`, so Google Workspace delivery is unaffected. Then confirm
+`MAIL_FROM` at the top of `worker/index.ts` uses an address on that domain.
+
+**2. Give the Worker the API key:**
+
+```sh
+npx wrangler secret put RESEND_API_KEY
 ```
 
-That single value drives both paths — the `fetch` submit and the form's `action`
-attribute, which the browser POSTs to if JavaScript fails — so they can't drift
-apart. `ContactForm` detects the `YOUR_FORM_ID` placeholder and falls back to
-`mailto:` until you replace it.
+Worker secrets live on the deployed Worker, not in CI — a GitHub Actions deploy
+will not overwrite it, and it never enters the repo.
 
-A honeypot field (`company_website`) is already in place and catches most naive
-spam bots.
+The mail is sent with `reply_to` set to the enquirer, so replying in your mail
+client goes straight back to them.
+
+**Both paths are covered.** With JavaScript the form `fetch`es and shows the
+result inline. Without it, the browser POSTs natively to the same URL and the
+Worker redirects to `/thanks`. The honeypot (`company_website`) is checked in the
+Worker as well as the client, since a bot can post straight past the client, and
+a caught bot gets the same success response as a real person so it learns
+nothing from the difference.
+
+Worth adding before you get traffic: a
+[rate limit](https://developers.cloudflare.com/waf/rate-limiting-rules/) on
+`/api/contact`. Nothing currently stops someone scripting the endpoint.
 
 ## A note on the Work page
 

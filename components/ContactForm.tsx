@@ -6,11 +6,6 @@ import { ArrowIcon } from "@/components/icons";
 
 type Status = { message: string; ok: boolean } | null;
 
-/* The endpoint ships unconfigured. Until it is set, fall back to the visitor's
-   mail client so the form still does something useful. */
-const configured =
-  site.formEndpoint !== "" && !site.formEndpoint.includes("YOUR_FORM_ID");
-
 export default function ContactForm() {
   const [status, setStatus] = useState<Status>(null);
   const [sending, setSending] = useState(false);
@@ -25,31 +20,9 @@ export default function ContactForm() {
 
     const data = new FormData(form);
 
-    // Honeypot: a real person never fills this in.
+    // Honeypot: a real person never fills this in. The Worker checks this too,
+    // since a bot can post straight past the client.
     if (data.get("company_website")) return;
-
-    if (!configured) {
-      const subject = `Project enquiry — ${data.get("name") || "Website"}`;
-      const body = [
-        `Name: ${data.get("name") || ""}`,
-        `Email: ${data.get("email") || ""}`,
-        `Project type: ${data.get("project_type") || ""}`,
-        `Budget: ${data.get("budget") || ""}`,
-        "",
-        String(data.get("message") || ""),
-      ].join("\n");
-
-      window.location.href =
-        `mailto:${site.email}` +
-        `?subject=${encodeURIComponent(subject)}` +
-        `&body=${encodeURIComponent(body)}`;
-
-      setStatus({
-        message: `Opening your email app — if nothing happens, write to ${site.email}.`,
-        ok: true,
-      });
-      return;
-    }
 
     setSending(true);
 

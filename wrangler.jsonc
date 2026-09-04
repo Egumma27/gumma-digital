@@ -3,18 +3,25 @@
   "name": "gumma-digital",
   "compatibility_date": "2026-09-04",
 
-  // Purely static: no Worker script, just the Next.js export in out/.
+  // Handles POST /api/contact. Static assets are matched first, so this only
+  // runs for paths with no file in out/.
+  "main": "./worker/index.ts",
+
   "assets": {
     "directory": "./out",
 
+    // Lets the Worker hand unmatched requests back for 404 handling.
+    "binding": "ASSETS",
+
     // Serves out/services.html at /services — the clean URLs the site's
-    // canonical tags and sitemap already assume. This is the default; it is
-    // spelled out because the routing depends on it.
+    // canonical tags and sitemap already assume.
     "html_handling": "auto-trailing-slash",
 
     // Serve out/404.html with a real 404 status for unknown paths.
     "not_found_handling": "404-page"
-  }
+  },
+
+  "observability": { "enabled": true }
 
   // Custom domains can live here instead of the dashboard, once the zone is
   // active on this Cloudflare account. Apex and www are separate hostnames —

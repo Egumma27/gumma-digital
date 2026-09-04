@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p worker",
     "deploy": "next build && wrangler deploy",
     "preview": "next build && wrangler dev"
   },
@@ -20,6 +20,7 @@
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
     "typescript": "^5.7.2",
-    "wrangler": "^4.129.0"
+    "wrangler": "^4.129.0",
+    "@cloudflare/workers-types": "^5.20260903.1"
   }
 }

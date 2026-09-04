@@ -15,9 +15,8 @@ export const site: {
   email: "support@gummadigital.com",
   tagline:
     "Freelance software development — web apps, websites, and mobile apps for founders and small teams.",
-  /* Paste your Formspree (or Basin / Web3Forms) endpoint here. Until it is set,
-     the contact form falls back to opening the visitor's mail client. */
-  formEndpoint: "https://formspree.io/f/YOUR_FORM_ID",
+  /* Handled by worker/index.ts, which emails site.email via Resend. */
+  formEndpoint: "/api/contact",
 };
 
 export const navItems = [
