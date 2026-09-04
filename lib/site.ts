@@ -12,7 +12,7 @@ export const site: {
   /* Your real domain — also drives canonical URLs, sitemap, and robots.txt. */
   url: "https://gummadigital.com",
   /* Your real address — used in the footer, CTAs, contact page, and JSON-LD. */
-  email: "hello@gummadigital.com",
+  email: "support@gummadigital.com",
   tagline:
     "Freelance software development — web apps, websites, and mobile apps for founders and small teams.",
   /* Paste your Formspree (or Basin / Web3Forms) endpoint here. Until it is set,

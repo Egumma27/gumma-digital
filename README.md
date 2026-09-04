@@ -44,7 +44,7 @@ These are the placeholders I could not fill in for you.
 
 | # | What | Where |
 |---|------|-------|
-| 1 | **`hello@gummadigital.com`** → your real address | `lib/site.ts` (`email`) — drives the footer, CTAs, contact page, and JSON-LD |
+| 1 | ~~Email address~~ — set to `support@gummadigital.com` | `lib/site.ts` (`email`) — drives the footer, CTAs, contact page, and JSON-LD |
 | 2 | **`https://gummadigital.com`** → your real domain | `lib/site.ts` (`url`) — drives canonical URLs, Open Graph, `sitemap.xml`, `robots.txt` |
 | 3 | **Contact form endpoint** | `lib/site.ts` (`formEndpoint`) — see below |
 | 4 | **Pricing** — `$2,500` / `$9,000` / `$750` are placeholders | `app/services/page.tsx` (`plans`) |
