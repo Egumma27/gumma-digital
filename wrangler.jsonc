@@ -1,0 +1,27 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "gumma-digital",
+  "compatibility_date": "2026-09-04",
+
+  // Purely static: no Worker script, just the Next.js export in out/.
+  "assets": {
+    "directory": "./out",
+
+    // Serves out/services.html at /services — the clean URLs the site's
+    // canonical tags and sitemap already assume. This is the default; it is
+    // spelled out because the routing depends on it.
+    "html_handling": "auto-trailing-slash",
+
+    // Serve out/404.html with a real 404 status for unknown paths.
+    "not_found_handling": "404-page"
+  }
+
+  // Custom domains can live here instead of the dashboard, once the zone is
+  // active on this Cloudflare account. Apex and www are separate hostnames —
+  // both need an entry, or a redirect rule from one to the other.
+  //
+  // "routes": [
+  //   { "pattern": "gummadigital.com", "custom_domain": true },
+  //   { "pattern": "www.gummadigital.com", "custom_domain": true }
+  // ]
+}

@@ -11,12 +11,20 @@
 
 # Logs
 *.log
+npm-debug.log*
 
-# Dependency dirs (none today, but the site may grow a build step)
+# Dependencies
 node_modules/
-dist/
-.cache/
+
+# Next.js build output
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
 
 # Environment / secrets — never commit form endpoints or API keys
 .env
 .env.*
+
+# Wrangler
+.wrangler/
